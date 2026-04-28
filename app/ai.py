@@ -31,7 +31,7 @@ def resolve_site(site_name: str) -> str:
     URL:
     """
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-1.5-flash",
         contents=prompt
     )
     url = response.text.strip()
@@ -76,7 +76,7 @@ def summarise_content(site: str, text: str, query: str = None) -> dict:
     """
 
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-1.5-flash",
         contents=prompt
     )
     raw = response.text.strip()
