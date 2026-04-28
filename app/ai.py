@@ -1,10 +1,10 @@
 import os
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def resolve_site(site_name: str) -> str:
@@ -30,11 +30,14 @@ def resolve_site(site_name: str) -> str:
     Website: "{site_name}"
     URL:
     """
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-lite",
-        contents=prompt
+
+    response = client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=50
     )
-    url = response.text.strip()
+
+    url = response.choices[0].message.content.strip()
 
     if not url.startswith("http"):
         url = "https://" + url
@@ -75,11 +78,13 @@ def summarise_content(site: str, text: str, query: str = None) -> dict:
     Format each item on its own line like: Item: Value
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-lite",
-        contents=prompt
+    response = client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1000
     )
-    raw = response.text.strip()
+
+    raw = response.choices[0].message.content.strip()
 
     result = {
         "summary": "",
