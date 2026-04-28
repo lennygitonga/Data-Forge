@@ -66,7 +66,7 @@ def scrape():
             raise Exception(f"Failed to fetch page: {result.get('error')}")
 
         # step 3 — summarise with Gemini
-        print("Summarising with Gemini...")
+        print("Summarising with Groq...")
         summary = summarise_content(site, result["text"], query)
 
         # step 4 — send email
