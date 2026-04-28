@@ -1,11 +1,10 @@
-import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+from google import genai
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def resolve_site(site_name: str) -> str:
@@ -31,10 +30,12 @@ def resolve_site(site_name: str) -> str:
     Website: "{site_name}"
     URL:
     """
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     url = response.text.strip()
 
-    # make sure it starts with http
     if not url.startswith("http"):
         url = "https://" + url
 
@@ -74,10 +75,12 @@ def summarise_content(site: str, text: str, query: str = None) -> dict:
     Format each item on its own line like: Item: Value
     """
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     raw = response.text.strip()
 
-    # parse the response into sections
     result = {
         "summary": "",
         "key_points": [],
