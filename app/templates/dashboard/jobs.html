@@ -1,1 +1,308 @@
- 
+ {% extends "base.html" %}
+
+{% block title %}Jobs — Data-Forge{% endblock %}
+
+{% block content %}
+<div class="main-content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Scrape Jobs</h1>
+        <p>Track and manage all your scrape jobs.</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('all')">
+            All Jobs ({{ jobs|length }})
+        </button>
+        <button class="tab-btn" onclick="switchTab('running')">
+            Running ({{ jobs|selectattr('status.value', 'equalto', 'running')|list|length }})
+        </button>
+        <button class="tab-btn" onclick="switchTab('done')">
+            Completed ({{ jobs|selectattr('status.value', 'equalto', 'done')|list|length }})
+        </button>
+        <button class="tab-btn" onclick="switchTab('failed')">
+            Failed ({{ jobs|selectattr('status.value', 'equalto', 'failed')|list|length }})
+        </button>
+    </div>
+
+    <!-- ALL JOBS -->
+    <div class="tab-content active" id="tab-all">
+        {% if jobs %}
+        <div class="card">
+            <table class="jobs-table">
+                <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Schedule</th>
+                        <th>Created</th>
+                        <th>Last Run</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr class="job-row" onclick="showDetail({{ job.id }})"
+                        style="cursor:pointer">
+                        <td>
+                            <div class="site-name">{{ job.site }}</div>
+                            {% if job.result_url %}
+                            <div class="site-url">{{ job.result_url }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="font-size:0.8rem;color:var(--gray)">{{ job.email }}</td>
+                        <td>
+                            <span class="badge badge-{{ job.status.value }}">
+                                {{ job.status.value }}
+                            </span>
+                        </td>
+                        <td style="font-size:0.8rem">{{ job.schedule or 'One-time' }}</td>
+                        <td style="font-size:0.8rem;color:var(--gray)">
+                            {{ job.created_at.strftime('%b %d, %Y') }}<br>
+                            <span style="font-size:0.75rem">{{ job.created_at.strftime('%H:%M') }}</span>
+                        </td>
+                        <td style="font-size:0.8rem;color:var(--gray)">
+                            {% if job.last_run_at %}
+                            {{ job.last_run_at.strftime('%b %d, %H:%M') }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td onclick="event.stopPropagation()">
+                            <form action="{{ url_for('main.delete_job', job_id=job.id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this job?')">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <!-- DETAIL ROW -->
+                    <tr class="detail-row" id="detail-{{ job.id }}" style="display:none">
+                        <td colspan="7" style="background:var(--off-white); padding:0">
+                            <div class="job-detail-panel">
+                                <div class="detail-grid">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Site</div>
+                                        <div class="detail-value">{{ job.site }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Resolved URL</div>
+                                        <div class="detail-value">
+                                            {% if job.result_url %}
+                                            <a href="{{ job.result_url }}" target="_blank"
+                                               style="color:var(--burgundy)">
+                                               {{ job.result_url }}
+                                            </a>
+                                            {% else %}Not resolved yet{% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Query</div>
+                                        <div class="detail-value">
+                                            {{ job.user_query or 'Auto-detected' }}
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Schedule</div>
+                                        <div class="detail-value">
+                                            {{ job.schedule or 'One-time' }}
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Status</div>
+                                        <div class="detail-value">
+                                            <span class="badge badge-{{ job.status.value }}">
+                                                {{ job.status.value }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Created</div>
+                                        <div class="detail-value">
+                                            {{ job.created_at.strftime('%B %d, %Y at %H:%M') }}
+                                        </div>
+                                    </div>
+                                    {% if job.error_msg %}
+                                    <div class="detail-item" style="grid-column:1/-1">
+                                        <div class="detail-label">Error</div>
+                                        <div class="detail-value"
+                                             style="color:#991B1B;font-size:0.8rem">
+                                            {{ job.error_msg }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="empty-state">
+                <h3>No jobs yet</h3>
+                <p>Head to the dashboard to submit your first scrape job.</p>
+                <a href="{{ url_for('main.home') }}" class="btn btn-gold">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- RUNNING TAB -->
+    <div class="tab-content" id="tab-running">
+        <div class="card">
+            {% set running = jobs|selectattr('status.value', 'equalto', 'running')|list %}
+            {% if running %}
+            <table class="jobs-table">
+                <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Email</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in running %}
+                    <tr>
+                        <td><div class="site-name">{{ job.site }}</div></td>
+                        <td style="font-size:0.8rem">{{ job.email }}</td>
+                        <td style="font-size:0.8rem">
+                            {{ job.created_at.strftime('%b %d, %H:%M') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>No running jobs</h3>
+                <p>All quiet — no jobs are currently running.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- COMPLETED TAB -->
+    <div class="tab-content" id="tab-done">
+        <div class="card">
+            {% set done = jobs|selectattr('status.value', 'equalto', 'done')|list %}
+            {% if done %}
+            <table class="jobs-table">
+                <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Email</th>
+                        <th>Last Run</th>
+                        <th>Schedule</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in done %}
+                    <tr>
+                        <td>
+                            <div class="site-name">{{ job.site }}</div>
+                            {% if job.result_url %}
+                            <div class="site-url">{{ job.result_url }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="font-size:0.8rem">{{ job.email }}</td>
+                        <td style="font-size:0.8rem">
+                            {% if job.last_run_at %}
+                            {{ job.last_run_at.strftime('%b %d, %H:%M') }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td style="font-size:0.8rem">{{ job.schedule or 'One-time' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>No completed jobs</h3>
+                <p>Completed jobs will appear here.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- FAILED TAB -->
+    <div class="tab-content" id="tab-failed">
+        <div class="card">
+            {% set failed = jobs|selectattr('status.value', 'equalto', 'failed')|list %}
+            {% if failed %}
+            <table class="jobs-table">
+                <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Error</th>
+                        <th>Created</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in failed %}
+                    <tr>
+                        <td><div class="site-name">{{ job.site }}</div></td>
+                        <td style="font-size:0.8rem;color:#991B1B">
+                            {{ job.error_msg or 'Unknown error' }}
+                        </td>
+                        <td style="font-size:0.8rem">
+                            {{ job.created_at.strftime('%b %d, %H:%M') }}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('main.delete_job', job_id=job.id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this job?')">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>No failed jobs</h3>
+                <p>Great — nothing has failed yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // tab switching
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+            const names = ['all', 'running', 'done', 'failed'];
+            btn.classList.toggle('active', names[i] === name);
+        });
+        document.querySelectorAll('.tab-content').forEach(c => {
+            c.classList.remove('active');
+        });
+        document.getElementById('tab-' + name).classList.add('active');
+    }
+
+    // job detail expand/collapse
+    function showDetail(id) {
+        const row = document.getElementById('detail-' + id);
+        const allDetails = document.querySelectorAll('.detail-row');
+        allDetails.forEach(r => {
+            if (r.id !== 'detail-' + id) r.style.display = 'none';
+        });
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+    }
+</script>
+{% endblock %}

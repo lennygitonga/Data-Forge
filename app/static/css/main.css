@@ -963,3 +963,31 @@ body.compact .jobs-table th {
 body.compact .hero-form {
   padding: 1.5rem;
 }
+
+/* ============================================
+   JOB DETAIL PANEL
+   ============================================ */
+.job-detail-panel {
+  padding: 1.25rem 1.5rem;
+  border-top: 2px solid var(--gold);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.detail-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 0.875rem;
+  color: var(--charcoal);
+}
