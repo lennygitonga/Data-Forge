@@ -31,16 +31,33 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('main.settings') }}"
-                   class="{% if request.endpoint == 'main.settings' %}active{% endif %}">
-                   Settings
-                </a>
+                <a href="{{ url_for('main.about') }}">About</a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.pricing') }}">Pricing</a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.contact') }}">Contact</a>
             </li>
         </ul>
 
         <div class="navbar-user">
             <span class="user-name">{{ current_user.name }}</span>
-            <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
+            <div class="gear-menu">
+                <button class="gear-btn" title="Settings">&#9881;</button>
+                <div class="gear-dropdown">
+                    <div class="gear-header">
+                        <div class="gear-name">{{ current_user.name }}</div>
+                        <div class="gear-email">{{ current_user.email }}</div>
+                    </div>
+                    <div class="gear-divider"></div>
+                    <a href="{{ url_for('main.settings') }}" class="gear-item">Settings</a>
+                    <a href="{{ url_for('main.about') }}" class="gear-item">About</a>
+                    <a href="{{ url_for('main.contact') }}" class="gear-item">Contact</a>
+                    <div class="gear-divider"></div>
+                    <a href="{{ url_for('auth.logout') }}" class="gear-item gear-logout">Logout</a>
+                </div>
+            </div>
         </div>
         {% endif %}
     </nav>
@@ -65,8 +82,9 @@
         <ul class="footer-links">
             <li><a href="{{ url_for('main.home') }}">Dashboard</a></li>
             <li><a href="{{ url_for('main.jobs') }}">Jobs</a></li>
-            <li><a href="{{ url_for('main.settings') }}">Settings</a></li>
-            <li><a href="#">Documentation</a></li>
+            <li><a href="{{ url_for('main.about') }}">About</a></li>
+            <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
+            <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
         </ul>
         <p>© 2024 Data-Forge — Automated Web Intelligence</p>
     </footer>

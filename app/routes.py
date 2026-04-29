@@ -21,7 +21,7 @@ def index():
 @login_required
 def home():
     jobs = Job.query.filter(Job.user_id == current_user.id)\
-           .order_by(Job.created_at.desc()).limit(5).all()
+               .order_by(Job.created_at.desc()).limit(5).all()
     return render_template("dashboard/home.html", jobs=jobs)
 
 
@@ -29,15 +29,8 @@ def home():
 @login_required
 def jobs():
     all_jobs = Job.query.filter(Job.user_id == current_user.id)\
-              .order_by(Job.created_at.desc()).all()
+                  .order_by(Job.created_at.desc()).all()
     return render_template("dashboard/jobs.html", jobs=all_jobs)
-
-
-@main.route("/jobs/<int:job_id>")
-@login_required
-def job_detail(job_id):
-    job = Job.query.get_or_404(job_id)
-    return render_template("dashboard/job_detail.html", job=job)
 
 
 @main.route("/jobs/<int:job_id>/delete", methods=["POST"])
@@ -62,26 +55,24 @@ def scrape():
     data = request.get_json()
 
     if not data:
-        # handle form submission
-        site     = request.form.get("site")
-        email    = request.form.get("email", current_user.email)
-        user_query    = request.form.get("query", None)
-        schedule = request.form.get("schedule", None)
+        site      = request.form.get("site")
+        email     = request.form.get("email", current_user.email)
+        user_query = request.form.get("user_query", None)
+        schedule  = request.form.get("schedule", None)
     else:
-        site     = data.get("site")
-        email    = data.get("email", current_user.email)
-        user_query    = data.get("query", None)
-        schedule = data.get("schedule", None)
+        site      = data.get("site")
+        email     = data.get("email", current_user.email)
+        user_query = data.get("user_query", None)
+        schedule  = data.get("schedule", None)
 
     if not site:
         flash("Please enter a website.", "error")
         return redirect(url_for("main.home"))
 
-    # create job
     job = Job(
         site=site,
         email=email,
-        query=query,
+        user_query=user_query,
         schedule=schedule,
         status=JobStatus.running,
         user_id=current_user.id
@@ -103,7 +94,7 @@ def scrape():
             raise Exception(f"Failed to fetch page: {result.get('error')}")
 
         print("Summarising with Groq...")
-        summary = summarise_content(site, result["text"], query)
+        summary = summarise_content(site, result["text"], user_query)
 
         print(f"Sending email to {email}...")
         send_report_email(email, site, summary)
@@ -126,3 +117,21 @@ def scrape():
 @main.route("/health")
 def health():
     return jsonify({"status": "healthy"})
+
+
+@main.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@main.route("/pricing")
+def pricing():
+    return render_template("pricing.html")
+
+
+@main.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "POST":
+        flash("Message sent! We will get back to you soon.", "success")
+        return redirect(url_for("main.contact"))
+    return render_template("contact.html")
