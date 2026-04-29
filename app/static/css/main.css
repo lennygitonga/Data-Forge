@@ -877,90 +877,90 @@ select.form-control {
 /* ============================================
    DARK MODE
    ============================================ */
-body.dark-mode {
+html.dark-mode {
   background: #0F0A0B;
   color: #E8D9B5;
 }
 
-body.dark-mode .navbar {
+html.dark-mode .navbar {
   background: #2A0A0F;
 }
 
-body.dark-mode .card {
+html.dark-mode .card {
   background: #1A0A0D;
   border-color: #3A1A20;
 }
 
-body.dark-mode .stat-card {
+html.dark-mode .stat-card {
   background: #1A0A0D;
   border-color: #3A1A20;
 }
 
-body.dark-mode .hero-form-overlay {
+html.dark-mode .hero-form-overlay {
   background: rgba(20, 5, 8, 0.92);
 }
 
-body.dark-mode .form-control {
+html.dark-mode .form-control {
   background: #1A0A0D;
   border-color: #3A1A20;
   color: #E8D9B5;
 }
 
-body.dark-mode .gear-dropdown {
+html.dark-mode .gear-dropdown {
   background: #1A0A0D;
   border-color: #3A1A20;
 }
 
-body.dark-mode .gear-header {
+html.dark-mode .gear-header {
   background: #0F0A0B;
 }
 
-body.dark-mode .gear-item:hover {
+html.dark-mode .gear-item:hover {
   background: #2A0A0F;
 }
 
-body.dark-mode .jobs-table td {
+html.dark-mode .jobs-table td {
   border-color: #2A0A0F;
   color: #E8D9B5;
 }
 
-body.dark-mode .jobs-table tr:hover td {
+html.dark-mode .jobs-table tr:hover td {
   background: #1A0A0D;
 }
 
-body.dark-mode .footer {
+html.dark-mode .footer {
   background: #2A0A0F;
 }
 
-body.dark-mode .page-header h1 {
+html.dark-mode .page-header h1 {
   color: var(--gold);
 }
 
 /* ============================================
    COMPACT VIEW
    ============================================ */
-body.compact .main-content {
+html.compact .main-content {
   padding: 1rem;
 }
 
-body.compact .card {
+html.compact .card {
   padding: 1rem;
 }
 
-body.compact .stat-card {
+html.compact .stat-card {
   padding: 0.75rem 1rem;
 }
 
-body.compact .stat-value {
+html.compact .stat-value {
   font-size: 1.5rem;
 }
 
-body.compact .jobs-table td,
-body.compact .jobs-table th {
+html.compact .jobs-table td,
+html.compact .jobs-table th {
   padding: 8px 10px;
 }
 
-body.compact .hero-form {
+html.compact .hero-form {
   padding: 1.5rem;
 }
 
@@ -1116,4 +1116,15 @@ body.compact .hero-form {
   border-color: var(--gold);
   color: var(--burgundy);
   background: var(--off-white);
+}
+
+/* ============================================
+   SETTINGS SECTIONS
+   ============================================ */
+.settings-section {
+  display: none;
+}
+
+.settings-section.active {
+  display: block;
 }

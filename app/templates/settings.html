@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Settings — Data-Forge{% endblock %}
+
+{% block content %}
+<div class="main-content">
+
+    <div class="page-header">
+        <h1>Settings</h1>
+        <p>Manage your account and preferences.</p>
+    </div>
+
+    <div class="settings-grid">
+
+        <!-- SIDEBAR NAV -->
+        <div>
+            <ul class="settings-nav">
+                <li><a href="#profile" class="active" onclick="showSection('profile',this)">Profile</a></li>
+                <li><a href="#password" onclick="showSection('password',this)">Password</a></li>
+                <li><a href="#notifications" onclick="showSection('notifications',this)">Notifications</a></li>
+                <li><a href="#danger" onclick="showSection('danger',this)">Danger Zone</a></li>
+            </ul>
+        </div>
+
+        <!-- SETTINGS CONTENT -->
+        <div>
+
+            <!-- PROFILE -->
+            <div class="settings-section active" id="section-profile">
+                <div class="card" style="border-top:3px solid var(--gold)">
+                    <p class="card-title">Profile Information</p>
+                    <form method="POST" action="#">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name" class="form-control"
+                                   value="{{ current_user.name }}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" class="form-control"
+                                   value="{{ current_user.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Member Since</label>
+                            <input type="text" class="form-control"
+                                   value="{{ current_user.created_at.strftime('%B %d, %Y') }}"
+                                   disabled
+                                   style="background:var(--off-white);color:var(--gray)">
+                        </div>
+                        <button type="submit" class="btn btn-gold">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="settings-section" id="section-password">
+                <div class="card" style="border-top:3px solid var(--gold)">
+                    <p class="card-title">Change Password</p>
+                    <form method="POST" action="#">
+                        <div class="form-group">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" name="current_password"
+                                   class="form-control" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">New Password</label>
+                            <input type="password" name="new_password"
+                                   class="form-control" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm New Password</label>
+                            <input type="password" name="confirm_password"
+                                   class="form-control" placeholder="Repeat new password">
+                        </div>
+                        <button type="submit" class="btn btn-gold">Update Password</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div class="settings-section" id="section-notifications">
+                <div class="card" style="border-top:3px solid var(--gold)">
+                    <p class="card-title">Notification Preferences</p>
+
+                    {% for label, desc in [
+                        ('Job Completed', 'Get notified when a scrape job finishes successfully'),
+                        ('Job Failed', 'Get notified when a scrape job fails'),
+                        ('Scheduled Reports', 'Receive emails when scheduled jobs run'),
+                        ('Product Updates', 'Hear about new features and improvements')
+                    ] %}
+                    <div style="display:flex;justify-content:space-between;align-items:center;
+                                padding:1rem 0;border-bottom:1px solid var(--border)">
+                        <div>
+                            <div style="font-size:0.875rem;font-weight:500;color:var(--charcoal)">
+                                {{ label }}
+                            </div>
+                            <div style="font-size:0.8rem;color:var(--gray);margin-top:2px">
+                                {{ desc }}
+                            </div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    {% endfor %}
+
+                    <div style="margin-top:1.5rem">
+                        <button class="btn btn-gold">Save Preferences</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DANGER ZONE -->
+            <div class="settings-section" id="section-danger">
+                <div class="card" style="border-top:3px solid #991B1B">
+                    <p class="card-title" style="color:#991B1B">Danger Zone</p>
+                    <p style="font-size:0.875rem;color:var(--gray);margin-bottom:1.5rem;line-height:1.6">
+                        These actions are irreversible. Please proceed with caution.
+                    </p>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;
+                                padding:1rem;background:var(--off-white);border-radius:6px;
+                                border:1px solid var(--border);margin-bottom:1rem">
+                        <div>
+                            <div style="font-size:0.875rem;font-weight:500">Delete All Jobs</div>
+                            <div style="font-size:0.8rem;color:var(--gray);margin-top:2px">
+                                Permanently delete all your scrape jobs and history.
+                            </div>
+                        </div>
+                        <button class="btn btn-danger"
+                                onclick="return confirm('Delete all jobs? This cannot be undone.')">
+                            Delete All
+                        </button>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;
+                                padding:1rem;background:#FEF2F2;border-radius:6px;
+                                border:1px solid #FECACA">
+                        <div>
+                            <div style="font-size:0.875rem;font-weight:500;color:#991B1B">
+                                Delete Account
+                            </div>
+                            <div style="font-size:0.8rem;color:#B91C1C;margin-top:2px">
+                                Permanently delete your account and all associated data.
+                            </div>
+                        </div>
+                        <button class="btn btn-danger"
+                                onclick="return confirm('Delete your account? This cannot be undone.')">
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showSection(name, el) {
+        event.preventDefault();
+
+        // update nav
+        document.querySelectorAll('.settings-nav a')
+                .forEach(a => a.classList.remove('active'));
+        el.classList.add('active');
+
+        // update sections
+        document.querySelectorAll('.settings-section')
+                .forEach(s => s.classList.remove('active'));
+        document.getElementById('section-' + name).classList.add('active');
+    }
+</script>
+{% endblock %}

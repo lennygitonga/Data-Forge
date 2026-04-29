@@ -2,6 +2,22 @@
 <html lang="en">
 
 <head>
+    <script>
+        // run immediately to prevent flash
+        (function () {
+            const font = localStorage.getItem('fontSize');
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            if (font && sizes[font]) {
+                document.documentElement.style.fontSize = sizes[font];
+            }
+            if (localStorage.getItem('darkMode') === 'on') {
+                document.documentElement.classList.add('dark-mode');
+            }
+            if (localStorage.getItem('compact') === 'on') {
+                document.documentElement.classList.add('compact');
+            }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Data-Forge{% endblock %}</title>
@@ -83,6 +99,12 @@
 
                         <div class="gear-divider"></div>
 
+                        <div class="gear-divider"></div>
+                        <a href="{{ url_for('main.settings') }}" class="gear-item">
+                            Account Settings
+                        </a>
+                        <div class="gear-divider"></div>
+
                         <!-- LOGOUT -->
                         <a href="{{ url_for('auth.logout') }}" class="gear-logout">
                             Logout
@@ -150,10 +172,10 @@
         }
         darkToggle.addEventListener('change', function () {
             if (this.checked) {
-                document.body.classList.add('dark-mode');
+                document.documentElement.classList.add('dark-mode');
                 localStorage.setItem('darkMode', 'on');
             } else {
-                document.body.classList.remove('dark-mode');
+                document.documentElement.classList.remove('dark-mode');
                 localStorage.setItem('darkMode', 'off');
             }
         });
@@ -163,7 +185,7 @@
             document.querySelectorAll('.font-size-btns button')
                 .forEach(b => b.classList.remove('active'));
             const sizes = { small: '14px', medium: '16px', large: '18px' };
-            document.body.style.fontSize = sizes[size];
+            document.documentElement.style.fontSize = sizes[size];
             localStorage.setItem('fontSize', size);
             document.getElementById('font' + size.charAt(0).toUpperCase() + size.slice(1))
                 .classList.add('active');
@@ -181,13 +203,13 @@
         }
         compactToggle.addEventListener('change', function () {
             if (this.checked) {
-                document.body.classList.add('compact');
+                document.documentElement.classList.add('compact');
                 localStorage.setItem('compact', 'on');
             } else {
-                document.body.classList.remove('compact');
+                document.documentElement.classList.remove('compact');
                 localStorage.setItem('compact', 'off');
             }
-        });
+        })
     </script>
 </body>
 
