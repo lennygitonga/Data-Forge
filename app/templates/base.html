@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,63 +8,97 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
-<div class="page-wrapper">
+    <div class="page-wrapper">
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <a href="{{ url_for('main.home') }}" class="navbar-brand">
-            Data<span>-Forge</span>
-        </a>
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <a href="{{ url_for('main.home') }}" class="navbar-brand">
+                Data<span>-Forge</span>
+            </a>
 
-        {% if current_user.is_authenticated %}
-        <ul class="navbar-nav">
-            <li>
-                <a href="{{ url_for('main.home') }}"
-                   class="{% if request.endpoint == 'main.home' %}active{% endif %}">
-                   Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('main.jobs') }}"
-                   class="{% if request.endpoint == 'main.jobs' %}active{% endif %}">
-                   Jobs
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('main.about') }}">About</a>
-            </li>
-            <li>
-                <a href="{{ url_for('main.pricing') }}">Pricing</a>
-            </li>
-            <li>
-                <a href="{{ url_for('main.contact') }}">Contact</a>
-            </li>
-        </ul>
+            {% if current_user.is_authenticated %}
+            <ul class="navbar-nav">
+                <li>
+                    <a href="{{ url_for('main.home') }}"
+                        class="{% if request.endpoint == 'main.home' %}active{% endif %}">
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.jobs') }}"
+                        class="{% if request.endpoint == 'main.jobs' %}active{% endif %}">
+                        Jobs
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.about') }}">About</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.pricing') }}">Pricing</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.contact') }}">Contact</a>
+                </li>
+            </ul>
 
-        <div class="navbar-user">
-            <span class="user-name">{{ current_user.name }}</span>
-            <div class="gear-menu">
-                <button class="gear-btn" title="Settings">&#9881;</button>
-                <div class="gear-dropdown">
-                    <div class="gear-header">
-                        <div class="gear-name">{{ current_user.name }}</div>
-                        <div class="gear-email">{{ current_user.email }}</div>
+            <div class="navbar-user">
+                <span class="user-name">{{ current_user.name }}</span>
+                <div class="gear-menu" id="gearMenu">
+                    <button class="gear-btn" id="gearBtn" title="Settings">&#9881;</button>
+                    <div class="gear-dropdown" id="gearDropdown">
+
+                        <!-- USER INFO -->
+                        <div class="gear-header">
+                            <div class="gear-name">{{ current_user.name }}</div>
+                            <div class="gear-email">{{ current_user.email }}</div>
+                        </div>
+                        <div class="gear-divider"></div>
+
+                        <!-- ACCESSIBILITY -->
+                        <div class="gear-section-label">Accessibility</div>
+
+                        <div class="gear-access-row">
+                            <span>Dark Mode</span>
+                            <label class="toggle">
+                                <input type="checkbox" id="darkModeToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="gear-access-row">
+                            <span>Font Size</span>
+                            <div class="font-size-btns">
+                                <button onclick="setFont('small')" id="fontSmall">A-</button>
+                                <button onclick="setFont('medium')" id="fontMedium" class="active">A</button>
+                                <button onclick="setFont('large')" id="fontLarge">A+</button>
+                            </div>
+                        </div>
+
+                        <div class="gear-access-row">
+                            <span>Compact View</span>
+                            <label class="toggle">
+                                <input type="checkbox" id="compactToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="gear-divider"></div>
+
+                        <!-- LOGOUT -->
+                        <a href="{{ url_for('auth.logout') }}" class="gear-logout">
+                            Logout
+                        </a>
+
                     </div>
-                    <div class="gear-divider"></div>
-                    <a href="{{ url_for('main.settings') }}" class="gear-item">Settings</a>
-                    <a href="{{ url_for('main.about') }}" class="gear-item">About</a>
-                    <a href="{{ url_for('main.contact') }}" class="gear-item">Contact</a>
-                    <div class="gear-divider"></div>
-                    <a href="{{ url_for('auth.logout') }}" class="gear-item gear-logout">Logout</a>
                 </div>
             </div>
-        </div>
-        {% endif %}
-    </nav>
+            {% endif %}
+        </nav>
 
-    <!-- FLASH MESSAGES -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div style="padding: 0 2rem; max-width:1200px; margin: 1rem auto; width:100%">
             {% for category, message in messages %}
@@ -71,26 +106,93 @@
             {% endfor %}
         </div>
         {% endif %}
-    {% endwith %}
+        {% endwith %}
 
-    <!-- PAGE CONTENT -->
-    {% block content %}{% endblock %}
+        <!-- PAGE CONTENT -->
+        {% block content %}{% endblock %}
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-brand">Data-Forge</div>
-        <ul class="footer-links">
-            <li><a href="{{ url_for('main.home') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('main.jobs') }}">Jobs</a></li>
-            <li><a href="{{ url_for('main.about') }}">About</a></li>
-            <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
-            <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
-        </ul>
-        <p>© 2024 Data-Forge — Automated Web Intelligence</p>
-    </footer>
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-brand">Data-Forge</div>
+            <ul class="footer-links">
+                <li><a href="{{ url_for('main.home') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('main.jobs') }}">Jobs</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
+                <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+            </ul>
+            <p>© 2024 Data-Forge — Automated Web Intelligence</p>
+        </footer>
 
-</div>
+    </div>
 
-{% block extra_js %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        // gear toggle — click to open, click away to close
+        const gearBtn = document.getElementById('gearBtn');
+        const gearDropdown = document.getElementById('gearDropdown');
+
+        gearBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            gearDropdown.classList.toggle('open');
+            gearBtn.classList.toggle('open');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!document.getElementById('gearMenu').contains(e.target)) {
+                gearDropdown.classList.remove('open');
+                gearBtn.classList.remove('open');
+            }
+        });
+
+        // dark mode
+        const darkToggle = document.getElementById('darkModeToggle');
+        if (localStorage.getItem('darkMode') === 'on') {
+            document.body.classList.add('dark-mode');
+            darkToggle.checked = true;
+        }
+        darkToggle.addEventListener('change', function () {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'on');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'off');
+            }
+        });
+
+        // font size
+        function setFont(size) {
+            document.querySelectorAll('.font-size-btns button')
+                .forEach(b => b.classList.remove('active'));
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            document.body.style.fontSize = sizes[size];
+            localStorage.setItem('fontSize', size);
+            document.getElementById('font' + size.charAt(0).toUpperCase() + size.slice(1))
+                .classList.add('active');
+        }
+
+        // restore font size
+        const savedFont = localStorage.getItem('fontSize');
+        if (savedFont) setFont(savedFont);
+
+        // compact view
+        const compactToggle = document.getElementById('compactToggle');
+        if (localStorage.getItem('compact') === 'on') {
+            document.body.classList.add('compact');
+            compactToggle.checked = true;
+        }
+        compactToggle.addEventListener('change', function () {
+            if (this.checked) {
+                document.body.classList.add('compact');
+                localStorage.setItem('compact', 'on');
+            } else {
+                document.body.classList.remove('compact');
+                localStorage.setItem('compact', 'off');
+            }
+        });
+    </script>
 </body>
+
 </html>

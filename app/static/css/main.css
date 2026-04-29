@@ -704,6 +704,9 @@ select.form-control {
 
 .gear-btn:hover {
   background: rgba(201,168,76,0.15);
+}
+
+.gear-btn.open {
   transform: rotate(45deg);
 }
 
@@ -715,13 +718,13 @@ select.form-control {
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: 8px;
-  min-width: 220px;
+  min-width: 260px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   z-index: 200;
   overflow: hidden;
 }
 
-.gear-menu:hover .gear-dropdown {
+.gear-dropdown.open {
   display: block;
 }
 
@@ -747,25 +750,216 @@ select.form-control {
   background: var(--border);
 }
 
+.gear-section-label {
+  padding: 10px 16px 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
 .gear-item {
   display: block;
   padding: 10px 16px;
   font-size: 0.875rem;
   color: var(--charcoal);
   transition: all 0.15s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
 }
 
 .gear-item:hover {
   background: var(--off-white);
   color: var(--burgundy);
-  padding-left: 20px;
 }
 
 .gear-logout {
   color: #991B1B;
+  width: 100%;
+  display: block;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  transition: all 0.15s;
 }
 
 .gear-logout:hover {
   background: #FEE2E2;
   color: #991B1B;
+}
+
+/* accessibility row */
+.gear-access-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  color: var(--charcoal);
+}
+
+.gear-access-row span {
+  color: var(--gray);
+  font-size: 0.8rem;
+}
+
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: var(--gold);
+}
+
+.toggle input:checked + .toggle-slider:before {
+  transform: translateX(16px);
+}
+
+.font-size-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.font-size-btns button {
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: var(--charcoal);
+  transition: all 0.15s;
+}
+
+.font-size-btns button:hover,
+.font-size-btns button.active {
+  background: var(--burgundy);
+  color: white;
+  border-color: var(--burgundy);
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+body.dark-mode {
+  background: #0F0A0B;
+  color: #E8D9B5;
+}
+
+body.dark-mode .navbar {
+  background: #2A0A0F;
+}
+
+body.dark-mode .card {
+  background: #1A0A0D;
+  border-color: #3A1A20;
+}
+
+body.dark-mode .stat-card {
+  background: #1A0A0D;
+  border-color: #3A1A20;
+}
+
+body.dark-mode .hero-form-overlay {
+  background: rgba(20, 5, 8, 0.92);
+}
+
+body.dark-mode .form-control {
+  background: #1A0A0D;
+  border-color: #3A1A20;
+  color: #E8D9B5;
+}
+
+body.dark-mode .gear-dropdown {
+  background: #1A0A0D;
+  border-color: #3A1A20;
+}
+
+body.dark-mode .gear-header {
+  background: #0F0A0B;
+}
+
+body.dark-mode .gear-item:hover {
+  background: #2A0A0F;
+}
+
+body.dark-mode .jobs-table td {
+  border-color: #2A0A0F;
+  color: #E8D9B5;
+}
+
+body.dark-mode .jobs-table tr:hover td {
+  background: #1A0A0D;
+}
+
+body.dark-mode .footer {
+  background: #2A0A0F;
+}
+
+body.dark-mode .page-header h1 {
+  color: var(--gold);
+}
+
+/* ============================================
+   COMPACT VIEW
+   ============================================ */
+body.compact .main-content {
+  padding: 1rem;
+}
+
+body.compact .card {
+  padding: 1rem;
+}
+
+body.compact .stat-card {
+  padding: 0.75rem 1rem;
+}
+
+body.compact .stat-value {
+  font-size: 1.5rem;
+}
+
+body.compact .jobs-table td,
+body.compact .jobs-table th {
+  padding: 8px 10px;
+}
+
+body.compact .hero-form {
+  padding: 1.5rem;
 }
