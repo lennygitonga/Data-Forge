@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Data-Forge{% endblock %}
+
+{% block content %}
+<div class="main-content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Welcome back, {{ current_user.name.split()[0] }}</h1>
+        <p>Submit a new scrape job or check your recent activity below.</p>
+    </div>
+
+    <!-- SCRAPE FORM HERO -->
+    <div class="hero-form">
+        <div class="hero-form-overlay"></div>
+        <div class="hero-form-content">
+            <h2>New Scrape Job</h2>
+            <p>Enter a website name or URL and we will scrape it and send the results to your email.</p>
+
+            <form action="{{ url_for('main.scrape') }}" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Website</label>
+                        <input type="text" name="site" class="form-control"
+                               placeholder="e.g. BBC News, reddit.com, amazon..."
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Send Report To</label>
+                        <input type="email" name="email" class="form-control"
+                               value="{{ current_user.email }}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">What to extract (optional)</label>
+                        <input type="text" name="user_query" class="form-control"
+                               placeholder="e.g. top headlines, product prices...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Schedule (optional)</label>
+                        <select name="schedule" class="form-control">
+                            <option value="">One-time scrape</option>
+                            <option value="every 1h">Every 1 hour</option>
+                            <option value="every 6h">Every 6 hours</option>
+                            <option value="every 12h">Every 12 hours</option>
+                            <option value="every 24h">Every 24 hours</option>
+                            <option value="every 7d">Every 7 days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-gold">
+                    Run Scrape Job
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ jobs|length }}</div>
+            <div class="stat-label">Recent Jobs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                {{ jobs|selectattr('status.value', 'equalto', 'done')|list|length }}
+            </div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                {{ jobs|selectattr('status.value', 'equalto', 'running')|list|length }}
+            </div>
+            <div class="stat-label">Running</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                {{ jobs|selectattr('status.value', 'equalto', 'failed')|list|length }}
+            </div>
+            <div class="stat-label">Failed</div>
+        </div>
+    </div>
+
+    <!-- RECENT JOBS -->
+    <div class="card">
+        <div style="d

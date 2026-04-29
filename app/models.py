@@ -36,7 +36,7 @@ class Job(db.Model):
     id          = db.Column(db.Integer, primary_key=True)
     site        = db.Column(db.String(500), nullable=False)
     email       = db.Column(db.String(255), nullable=False)
-    query       = db.Column(db.Text, nullable=True)
+    user_query  = db.Column(db.Text, nullable=True)
     schedule    = db.Column(db.String(100), nullable=True)
     status      = db.Column(db.Enum(JobStatus), default=JobStatus.pending)
     result_url  = db.Column(db.Text, nullable=True)

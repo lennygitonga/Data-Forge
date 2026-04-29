@@ -65,12 +65,12 @@ def scrape():
         # handle form submission
         site     = request.form.get("site")
         email    = request.form.get("email", current_user.email)
-        query    = request.form.get("query", None)
+        user_query    = request.form.get("query", None)
         schedule = request.form.get("schedule", None)
     else:
         site     = data.get("site")
         email    = data.get("email", current_user.email)
-        query    = data.get("query", None)
+        user_query    = data.get("query", None)
         schedule = data.get("schedule", None)
 
     if not site:
