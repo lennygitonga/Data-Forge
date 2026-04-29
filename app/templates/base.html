@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Data-Forge{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="{{ url_for('main.home') }}" class="navbar-brand">
+            Data<span>-Forge</span>
+        </a>
+
+        {% if current_user.is_authenticated %}
+        <ul class="navbar-nav">
+            <li>
+                <a href="{{ url_for('main.home') }}"
+                   class="{% if request.endpoint == 'main.home' %}active{% endif %}">
+                   Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.jobs') }}"
+                   class="{% if request.endpoint == 'main.jobs' %}active{% endif %}">
+                   Jobs
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.settings') }}"
+                   class="{% if request.endpoint == 'main.settings' %}active{% endif %}">
+                   Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="navbar-user">
+            <span class="user-name">{{ current_user.name }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
+        </div>
+        {% endif %}
+    </nav>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div style="padding: 0 2rem; max-width:1200px; margin: 1rem auto; width:100%">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- PAGE CONTENT -->
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-brand">Data-Forge</div>
+        <ul class="footer-links">
+            <li><a href="{{ url_for('main.home') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('main.jobs') }}">Jobs</a></li>
+            <li><a href="{{ url_for('main.settings') }}">Settings</a></li>
+            <li><a href="#">Documentation</a></li>
+        </ul>
+        <p>© 2024 Data-Forge — Automated Web Intelligence</p>
+    </footer>
+
+</div>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
