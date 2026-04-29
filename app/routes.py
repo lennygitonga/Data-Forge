@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash
+from flask import Blueprint, app, jsonify, request, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.scraper import fetch_page
 from app.ai import resolve_site, summarise_content
@@ -102,6 +102,11 @@ def scrape():
         job.status = JobStatus.done
         job.last_run_at = datetime.utcnow()
         db.session.commit()
+
+        # if scheduled, register with APScheduler
+        if schedule:
+            from app.scheduler import schedule_job
+            schedule_job(app._get_current_object(), job)
 
         flash(f"Report sent to {email} successfully!", "success")
         return redirect(url_for("main.jobs"))
