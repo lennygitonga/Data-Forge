@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}About Us — Data-Forge{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<div style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80');
+            background-size:cover; background-position:center; position:relative; padding: 6rem 2rem;">
+    <div style="position:absolute;inset:0;background:rgba(74,9,18,0.85)"></div>
+    <div style="position:relative;z-index:1;max-width:700px;margin:0 auto;text-align:center;color:white">
+        <p style="color:var(--gold);font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem">Our Story</p>
+        <h1 style="font-family:'Playfair Display',serif;font-size:2.75rem;color:white;margin-bottom:1.25rem;line-height:1.2">
+            We believe data should work for people, not the other way around.
+        </h1>
+        <p style="font-size:1rem;line-height:1.8;color:rgba(255,255,255,0.8)">
+            Data-Forge was built by a small team tired of copying and pasting information from websites.
+            We decided to build the tool we always wished existed.
+        </p>
+    </div>
+</div>
+
+<div class="main-content">
+
+    <!-- OUR STORY -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin:3rem 0">
+        <div>
+            <p style="color:var(--gold);font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem">How We Started</p>
+            <h2 style="color:var(--burgundy);font-size:1.75rem;margin-bottom:1.25rem;line-height:1.3">
+                Born out of frustration. Built with purpose.
+            </h2>
+            <p style="color:var(--gray);line-height:1.8;margin-bottom:1rem;font-size:0.95rem">
+                In 2023, our founders were spending hours every week manually collecting data from
+                competitor websites, news sources, and market feeds. Copy. Paste. Format. Repeat.
+                It was exhausting and error-prone.
+            </p>
+            <p style="color:var(--gray);line-height:1.8;font-size:0.95rem">
+                So we built Data-Forge — a platform where you simply name a website, and intelligent
+                automation handles everything else. Within months, what used to take hours now takes
+                seconds.
+            </p>
+        </div>
+        <div style="background-image:url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80');
+                    background-size:cover;background-position:center;
+                    border-radius:12px;height:320px;
+                    border:3px solid var(--gold)">
+        </div>
+    </div>
+
+    <div class="page-divider"></div>
+
+    <!-- MISSION & VALUES -->
+    <div style="text-align:center;padding:3rem 0 2rem">
+        <p style="color:var(--gold);font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem">What Drives Us</p>
+        <h2 style="color:var(--burgundy);font-size:1.75rem;margin-bottom:0.5rem">Mission & Values</h2>
+        <p style="color:var(--gray);font-size:0.9rem;max-width:500px;margin:0 auto">
+            Everything we build comes back to one belief — intelligence should be accessible to everyone.
+        </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:3rem">
+        <div class="card" style="border-top:3px solid var(--gold);text-align:center">
+            <div style="font-size:1.75rem;margin-bottom:0.75rem">&#127919;</div>
+            <h3 style="color:var(--burgundy);margin-bottom:0.5rem;font-size:1rem">Our Mission</h3>
+            <p style="font-size:0.85rem;color:var(--gray);line-height:1.7">
+                To make web intelligence effortless — so anyone can access, analyse,
+                and act on data without writing a single line of code.
+            </p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gold);text-align:center">
+            <div style="font-size:1.75rem;margin-bottom:0.75rem">&#128161;</div>
+            <h3 style="color:var(--burgundy);margin-bottom:0.5rem;font-size:1rem">Our Vision</h3>
+            <p style="font-size:0.85rem;color:var(--gray);line-height:1.7">
+                A world where every business decision is backed by real-time data,
+                automatically collected and intelligently summarised.
+            </p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--gold);text-align:center">
+            <div style="font-size:1.75rem;margin-bottom:0.75rem">&#9889;</div>
+            <h3 style="color:var(--burgundy);margin-bottom:0.5rem;font-size:1rem">Our Goal</h3>
+            <p style="font-size:0.85rem;color:var(--gray);line-height:1.7">
+                To serve 100,000 businesses worldwide with automated web intelligence
+                by 2026 — starting with one scrape job at a time.
+            </p>
+        </div>
+    </div>
+
+    <div class="page-divider"></div>
+
+    <!-- TEAM -->
+    <div style="text-align:center;padding:3rem 0 2rem">
+        <p style="color:var(--gold);font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem">The People</p>
+        <h2 style="color:var(--burgundy);font-size:1.75rem;margin-bottom:0.5rem">Meet The Team</h2>
+        <p style="color:var(--gray);font-size:0.9rem">Small team. Big ambitions.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;margin-bottom:3rem">
+
+        <!-- PERSON 1 -->
+        <div class="card team-card">
+            <div class="team-img" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80')"></div>
+            <div class="team-body">
+                <h3 class="team-name">Marcus Osei</h3>
+                <p class="team-role">Co-Founder & CEO</p>
+                <p class="team-bio">
+                    Former data analyst at a Nairobi fintech. Marcus spent 5 years
+                    drowning in spreadsheets before deciding there had to be a better way.
+                    He leads product vision and company strategy at Data-Forge.
+                </p>
+                <div class="team-links">
+                    <span class="team-tag">Product</span>
+                    <span class="team-tag">Strategy</span>
+                    <span class="team-tag">Data</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERSON 2 -->
+        <div class="card team-card">
+            <div class="team-img" style="background-image:url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80')"></div>
+            <div class="team-body">
+                <h3 class="team-name">Amara Diallo</h3>
+                <p class="team-role">Co-Founder & CTO</p>
+                <p class="team-bio">
+                    Full-stack engineer with a background in AI and distributed systems.
+                    Amara built the entire scraping engine and AI pipeline that powers
+                    Data-Forge from the ground up.
+                </p>
+                <div class="team-links">
+                    <span class="team-tag">Python</span>
+                    <span class="team-tag">AI</span>
+                    <span class="team-tag">Backend</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERSON 3 -->
+        <div class="card team-card">
+            <div class="team-img" style="background-image:url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80')"></div>
+            <div class="team-body">
+                <h3 class="team-name">Jordan Kimani</h3>
+                <p class="team-role">Head of Design & Growth</p>
+                <p class="team-bio">
+                    Designer turned growth hacker. Jordan obsesses over user experience
+                    and making sure Data-Forge feels as good as it works.
+                    He owns everything from UI to marketing.
+                </p>
+                <div class="team-links">
+                    <span class="team-tag">Design</span>
+                    <span class="team-tag">Growth</span>
+                    <span class="team-tag">UX</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="page-divider"></div>
+
+    <!-- CTA -->
+    <div style="text-align:center;padding:3rem 0">
+        <h2 style="color:var(--burgundy);margin-bottom:0.5rem">Want to work with us?</h2>
+        <p style="color:var(--gray);margin-bottom:1.5rem;font-size:0.9rem">
+            We are always looking for talented people who care about data and automation.
+        </p>
+        <a href="{{ url_for('main.contact') }}" class="btn btn-gold">Get In Touch</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -991,3 +991,74 @@ body.compact .hero-form {
   font-size: 0.875rem;
   color: var(--charcoal);
 }
+
+/* ============================================
+   TEAM CARDS
+   ============================================ */
+.team-card {
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(107,15,26,0.12);
+}
+
+.team-img {
+  height: 220px;
+  background-size: cover;
+  background-position: center top;
+  border-bottom: 3px solid var(--gold);
+}
+
+.team-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.team-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--burgundy);
+  margin-bottom: 3px;
+}
+
+.team-role {
+  font-size: 0.8rem;
+  color: var(--gold-dark);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.team-bio {
+  font-size: 0.85rem;
+  color: var(--gray);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.team-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.team-tag {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  color: var(--burgundy);
+  font-weight: 500;
+}
+
+/* responsive about page */
+@media (max-width: 768px) {
+  .about-story-grid {
+    grid-template-columns: 1fr;
+  }
+}

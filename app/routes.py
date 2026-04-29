@@ -123,12 +123,6 @@ def health():
 def about():
     return render_template("about.html")
 
-
-@main.route("/pricing")
-def pricing():
-    return render_template("pricing.html")
-
-
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
