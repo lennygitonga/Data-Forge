@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data-Forge — Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<div class="auth-page">
+    <div class="auth-overlay"></div>
+
+    <div class="auth-card">
+        <!-- LOGO -->
+        <div class="auth-logo">
+            <h1>Data-Forge</h1>
+            <p>Automated Web Intelligence</p>
+        </div>
+
+        <!-- TABS -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchTab('login')">
+                Login
+            </button>
+            <button class="auth-tab" onclick="switchTab('register')">
+                Register
+            </button>
+        </div>
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- LOGIN FORM -->
+        <form class="auth-form active" id="login-form"
+              action="{{ url_for('auth.login') }}" method="POST">
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control"
+                       placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control"
+                       placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-gold btn-full">
+                Login to Data-Forge
+            </button>
+            <p style="text-align:center; margin-top:1rem; font-size:0.8rem; color:#6B7280">
+                No account?
+                <a href="#" onclick="switchTab('register')"
+                   style="color:#6B0F1A; font-weight:600">Register here</a>
+            </p>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form class="auth-form" id="register-form"
+              action="{{ url_for('auth.register') }}" method="POST">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control"
+                       placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control"
+                       placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control"
+                       placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password" class="form-control"
+                       placeholder="Repeat your password" required>
+            </div>
+            <button type="submit" class="btn btn-gold btn-full">
+                Create Account
+            </button>
+            <p style="text-align:center; margin-top:1rem; font-size:0.8rem; color:#6B7280">
+                Already have an account?
+                <a href="#" onclick="switchTab('login')"
+                   style="color:#6B0F1A; font-weight:600">Login here</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<script>
+    // check if we should show register tab (after failed registration)
+    const showTab = "{{ request.args.get('tab', 'login') }}";
+    if (showTab === 'register') switchTab('register');
+
+    function switchTab(tab) {
+        // update tab buttons
+        document.querySelectorAll('.auth-tab').forEach((t, i) => {
+            t.classList.toggle('active', 
+                (tab === 'login' && i === 0) || 
+                (tab === 'register' && i === 1)
+            );
+        });
+
+        // update forms
+        document.getElementById('login-form').classList.toggle('active', tab === 'login');
+        document.getElementById('register-form').classList.toggle('active', tab === 'register');
+    }
+</script>
+
+</body>
+</html>
