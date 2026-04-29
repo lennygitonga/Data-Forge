@@ -39,7 +39,7 @@ def register():
         flash("Account created! Please log in.", "success")
         return redirect(url_for("auth.login"))
 
-    return render_template("auth/register.html")
+    return render_template("auth/auth.html", tab="register")
 
 
 @auth.route("/login", methods=["GET", "POST"])
@@ -61,7 +61,7 @@ def login():
         next_page = request.args.get("next")
         return redirect(next_page or url_for("main.home"))
 
-    return render_template("auth/login.html")
+    return render_template("auth/auth.html", tab="login")
 
 
 @auth.route("/logout")
