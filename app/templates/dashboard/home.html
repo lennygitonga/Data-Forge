@@ -87,4 +87,48 @@
 
     <!-- RECENT JOBS -->
     <div class="card">
-        <div style="d
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+            <p class="card-title">Recent Jobs</p>
+            <a href="{{ url_for('main.jobs') }}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+
+        {% if jobs %}
+        <table class="jobs-table">
+            <thead>
+                <tr>
+                    <th>Site</th>
+                    <th>Status</th>
+                    <th>Schedule</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>
+                        <div class="site-name">{{ job.site }}</div>
+                        {% if job.result_url %}
+                        <div class="site-url">{{ job.result_url }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ job.status.value }}">
+                            {{ job.status.value }}
+                        </span>
+                    </td>
+                    <td>{{ job.schedule or 'One-time' }}</td>
+                    <td>{{ job.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <h3>No jobs yet</h3>
+            <p>Submit your first scrape job above to get started.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
