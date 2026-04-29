@@ -20,16 +20,16 @@ def index():
 @main.route("/dashboard")
 @login_required
 def home():
-    jobs = Job.query.filter_by(user_id=current_user.id)\
-               .order_by(Job.created_at.desc()).limit(5).all()
+    jobs = Job.query.filter(Job.user_id == current_user.id)\
+           .order_by(Job.created_at.desc()).limit(5).all()
     return render_template("dashboard/home.html", jobs=jobs)
 
 
 @main.route("/jobs")
 @login_required
 def jobs():
-    all_jobs = Job.query.filter_by(user_id=current_user.id)\
-                  .order_by(Job.created_at.desc()).all()
+    all_jobs = Job.query.filter(Job.user_id == current_user.id)\
+              .order_by(Job.created_at.desc()).all()
     return render_template("dashboard/jobs.html", jobs=all_jobs)
 
 
