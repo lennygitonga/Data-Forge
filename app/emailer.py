@@ -114,3 +114,79 @@ def send_report_email(to_email: str, site: str, summary: dict) -> bool:
     except Exception as e:
         print(f"✗ Email failed: {e}")
         return False
+    
+    def send_error_email(to_email: str, site: str, error: str) -> bool:
+    """
+    Sends an error notification email when a scrape job fails.
+    """
+    try:
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; background: #FAF7F2; margin: 0; padding: 0; }}
+                .container {{ max-width: 600px; margin: 30px auto; background: white;
+                             border-radius: 10px; overflow: hidden;
+                             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+                             border: 1px solid #E8D9B5; }}
+                .header {{ background: #1A1A1A; color: white; padding: 30px;
+                          text-align: center; }}
+                .header h1 {{ margin: 0; font-size: 20px; color: #C9A84C;
+                             letter-spacing: 2px; text-transform: uppercase; }}
+                .header p {{ margin: 6px 0 0; color: #999; font-size: 13px; }}
+                .body {{ padding: 30px; }}
+                .error-box {{ background: #FEE2E2; border-left: 4px solid #991B1B;
+                             padding: 16px; border-radius: 0 6px 6px 0;
+                             margin-bottom: 1.5rem; }}
+                .error-box p {{ margin: 0; color: #991B1B; font-size: 14px;
+                               line-height: 1.6; }}
+                .info {{ font-size: 13px; color: #6B7280; line-height: 1.7; }}
+                .footer {{ background: #6B0F1A; text-align: center; padding: 16px;
+                          font-size: 11px; color: #C9A84C; letter-spacing: 1px;
+                          text-transform: uppercase; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Data-Forge</h1>
+                    <p>Scrape Job Failed</p>
+                </div>
+                <div class="body">
+                    <p class="info">
+                        Your scrape job for <strong>{site}</strong> encountered
+                        an error and could not be completed.
+                    </p>
+                    <br>
+                    <div class="error-box">
+                        <p><strong>Error:</strong> {error}</p>
+                    </div>
+                    <p class="info">
+                        Please check that the website is accessible and try again
+                        from your Data-Forge dashboard. If the problem persists,
+                        contact us at hello@dataforge.io.
+                    </p>
+                </div>
+                <div class="footer">
+                    Powered by Data-Forge — Automated Web Intelligence
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        params = {
+            "from": "Data-Forge <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": f"Data-Forge — Scrape Failed for {site}",
+            "html": html,
+        }
+
+        email = resend.Emails.send(params)
+        print(f"Error email sent to {to_email} — ID: {email['id']}")
+        return True
+
+    except Exception as e:
+        print(f"Failed to send error email: {e}")
+        return False
