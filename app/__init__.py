@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -12,6 +13,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # required for google oauth over http in development
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
@@ -21,7 +25,11 @@ def create_app():
 
     from app.routes import main
     from app.auth import auth
+    from app.google_auth import google_auth
+
     app.register_blueprint(main)
     app.register_blueprint(auth)
+    app.register_blueprint(google_auth)
 
     return app
+    
