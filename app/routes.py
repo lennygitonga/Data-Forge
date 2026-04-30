@@ -1,4 +1,4 @@
-from flask import Blueprint, app, jsonify, request, render_template, redirect, url_for, flash
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from app.scraper import fetch_page
 from app.ai import resolve_site, summarise_content
@@ -134,3 +134,96 @@ def contact():
         flash("Message sent! We will get back to you soon.", "success")
         return redirect(url_for("main.contact"))
     return render_template("contact.html")
+
+# ─── API ENDPOINTS FOR CLI ────────────────────────────────────────────────────
+
+@main.route("/api/scrape", methods=["POST"])
+def api_scrape():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    site       = data.get("site")
+    email      = data.get("email")
+    user_query = data.get("user_query", None)
+    schedule   = data.get("schedule", None)
+
+    if not site:
+        return jsonify({"error": "site is required"}), 400
+    if not email:
+        return jsonify({"error": "email is required"}), 400
+
+    job = Job(
+        site=site,
+        email=email,
+        user_query=user_query,
+        schedule=schedule,
+        status=JobStatus.running
+    )
+    db.session.add(job)
+    db.session.commit()
+
+    try:
+        print(f"Resolving site: {site}")
+        url = resolve_site(site)
+        job.result_url = url
+        db.session.commit()
+
+        print(f"Scraping: {url}")
+        result = fetch_page(url)
+
+        if not result["success"]:
+            raise Exception(f"Failed to fetch: {result.get('error')}")
+
+        print("Summarising with Groq...")
+        summary = summarise_content(site, result["text"], user_query)
+
+        print(f"Sending email to {email}...")
+        send_report_email(email, site, summary)
+
+        job.status = JobStatus.done
+        job.last_run_at = datetime.utcnow()
+        db.session.commit()
+
+        if schedule:
+            from app.scheduler import schedule_job
+            schedule_job(current_app._get_current_object(), job)
+
+        return jsonify({
+            "success": True,
+            "job_id": job.id,
+            "url": url,
+            "message": f"Report sent to {email}"
+        })
+
+    except Exception as e:
+        job.status = JobStatus.failed
+        job.error_msg = str(e)
+        db.session.commit()
+        return jsonify({"error": str(e)}), 500
+
+
+@main.route("/api/jobs", methods=["GET"])
+def api_jobs():
+    jobs = Job.query.order_by(Job.created_at.desc()).all()
+    return jsonify([
+        {
+            "id": job.id,
+            "site": job.site,
+            "email": job.email,
+            "status": job.status.value,
+            "schedule": job.schedule,
+            "url": job.result_url,
+            "created_at": job.created_at.isoformat(),
+            "last_run_at": job.last_run_at.isoformat() if job.last_run_at else None
+        }
+        for job in jobs
+    ])
+
+
+@main.route("/api/jobs/<int:job_id>", methods=["DELETE"])
+def api_delete_job(job_id):
+    job = Job.query.get_or_404(job_id)
+    db.session.delete(job)
+    db.session.commit()
+    return jsonify({"success": True, "message": f"Job {job_id} deleted"})
