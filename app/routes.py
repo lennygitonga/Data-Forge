@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, render_template, redirect, url_fo
 from flask_login import login_required, current_user
 from app.scraper import fetch_page
 from app.ai import resolve_site, summarise_content
-from app.emailer import send_report_email
+from app.emailer import send_report_email, send_error_email
 from app import db
 from app.models import Job, JobStatus
 from datetime import datetime
@@ -55,15 +55,15 @@ def scrape():
     data = request.get_json()
 
     if not data:
-        site      = request.form.get("site")
-        email     = request.form.get("email", current_user.email)
+        site       = request.form.get("site")
+        email      = request.form.get("email", current_user.email)
         user_query = request.form.get("user_query", None)
-        schedule  = request.form.get("schedule", None)
+        schedule   = request.form.get("schedule", None)
     else:
-        site      = data.get("site")
-        email     = data.get("email", current_user.email)
+        site       = data.get("site")
+        email      = data.get("email", current_user.email)
         user_query = data.get("user_query", None)
-        schedule  = data.get("schedule", None)
+        schedule   = data.get("schedule", None)
 
     if not site:
         flash("Please enter a website.", "error")
@@ -103,10 +103,9 @@ def scrape():
         job.last_run_at = datetime.utcnow()
         db.session.commit()
 
-        # if scheduled, register with APScheduler
         if schedule:
             from app.scheduler import schedule_job
-            schedule_job(app._get_current_object(), job)
+            schedule_job(current_app._get_current_object(), job)
 
         flash(f"Report sent to {email} successfully!", "success")
         return redirect(url_for("main.jobs"))
@@ -115,6 +114,7 @@ def scrape():
         job.status = JobStatus.failed
         job.error_msg = str(e)
         db.session.commit()
+        send_error_email(email, site, str(e))
         flash(f"Scrape failed: {str(e)}", "error")
         return redirect(url_for("main.home"))
 
@@ -128,12 +128,14 @@ def health():
 def about():
     return render_template("about.html")
 
+
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
         flash("Message sent! We will get back to you soon.", "success")
         return redirect(url_for("main.contact"))
     return render_template("contact.html")
+
 
 # ─── API ENDPOINTS FOR CLI ────────────────────────────────────────────────────
 
@@ -200,6 +202,7 @@ def api_scrape():
         job.status = JobStatus.failed
         job.error_msg = str(e)
         db.session.commit()
+        send_error_email(email, site, str(e))
         return jsonify({"error": str(e)}), 500
 
 
