@@ -115,7 +115,7 @@ def send_report_email(to_email: str, site: str, summary: dict) -> bool:
         print(f"✗ Email failed: {e}")
         return False
     
-    def send_error_email(to_email: str, site: str, error: str) -> bool:
+def send_error_email(to_email: str, site: str, error: str) -> bool:
     """
     Sends an error notification email when a scrape job fails.
     """
