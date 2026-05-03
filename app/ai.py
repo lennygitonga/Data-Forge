@@ -97,12 +97,14 @@ def summarise_content(site: str, text: str, query: str = None) -> dict:
     - Point 5
 
     DATA:
-    Extract the most important structured data from the page as a clean list.
-    For example: headlines, prices, names, dates, links — whatever is most relevant.
+    Extract ALL structured data items from the page — do not limit to 5 or 10.
+    Extract every single item you can find — every headline, every price, every product,
+    every discount, every listing. The more the better.
     Format each item on its own line like: Item: Value
+    There is no maximum — extract everything.
     """
 
-    raw = call_groq(prompt, max_tokens=1000)
+    raw = call_groq(prompt, max_tokens=4000)
 
     result = {
         "summary": "",

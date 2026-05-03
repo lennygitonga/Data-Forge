@@ -28,6 +28,30 @@
         </div>
     </div>
 
+    <!-- CANCEL SCHEDULE MODAL -->
+    <div id="cancelModal" style="display:none;position:fixed;inset:0;
+         background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center">
+        <div style="background:white;border-radius:10px;padding:2rem;
+                    max-width:400px;width:90%;border-top:4px solid var(--gold);
+                    box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+            <h3 style="color:var(--burgundy);font-family:'Playfair Display',serif;
+                       margin-bottom:0.5rem">Cancel Scheduled Job</h3>
+            <p style="color:var(--gray);font-size:0.875rem;margin-bottom:1.5rem;line-height:1.6">
+                This will stop the job from running automatically on its schedule.
+                The job history will remain but no future runs will be triggered.
+            </p>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+                <button onclick="closeCancelModal()"
+                        class="btn btn-outline btn-sm">Keep Schedule</button>
+                <form id="cancelForm" method="POST">
+                    <button type="submit" class="btn btn-gold btn-sm">
+                        Cancel Schedule
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- PAGE HEADER -->
     <div class="page-header">
         <h1>Scrape Jobs</h1>
@@ -76,13 +100,17 @@
                             <div class="site-url">{{ job.result_url }}</div>
                             {% endif %}
                         </td>
-                        <td style="font-size:0.8rem;color:var(--gray)">{{ job.email }}</td>
+                        <td style="font-size:0.8rem;color:var(--gray)">
+                            {{ job.email }}
+                        </td>
                         <td>
                             <span class="badge badge-{{ job.status.value }}">
                                 {{ job.status.value }}
                             </span>
                         </td>
-                        <td style="font-size:0.8rem">{{ job.schedule or 'One-time' }}</td>
+                        <td style="font-size:0.8rem">
+                            {{ job.schedule or 'One-time' }}
+                        </td>
                         <td style="font-size:0.8rem;color:var(--gray)">
                             {{ job.created_at.strftime('%b %d, %Y') }}<br>
                             <span style="font-size:0.75rem">
@@ -102,14 +130,12 @@
                                 Delete
                             </button>
                             {% if job.schedule %}
-                            <form action="{{ url_for('main.cancel_job', job_id=job.id) }}"
-                                  method="POST"
-                                  onsubmit="return confirm('Cancel this scheduled job?')"
-                                  style="display:inline;margin-left:4px">
-                                <button type="submit" class="btn btn-outline btn-sm">
-                                    Cancel Schedule
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="btn btn-outline btn-sm"
+                                    style="margin-left:4px"
+                                    onclick="openCancelModal('{{ url_for('main.cancel_job', job_id=job.id) }}')">
+                                Cancel Schedule
+                            </button>
                             {% endif %}
                         </td>
                     </tr>
@@ -128,7 +154,8 @@
                                         <div class="detail-label">Resolved URL</div>
                                         <div class="detail-value">
                                             {% if job.result_url %}
-                                            <a href="{{ job.result_url }}" target="_blank"
+                                            <a href="{{ job.result_url }}"
+                                               target="_blank"
                                                style="color:var(--burgundy)">
                                                {{ job.result_url }}
                                             </a>
@@ -255,7 +282,9 @@
                             {{ job.last_run_at.strftime('%b %d, %H:%M') }}
                             {% else %}—{% endif %}
                         </td>
-                        <td style="font-size:0.8rem">{{ job.schedule or 'One-time' }}</td>
+                        <td style="font-size:0.8rem">
+                            {{ job.schedule or 'One-time' }}
+                        </td>
                         <td>
                             <button type="button"
                                     class="btn btn-danger btn-sm"
@@ -350,8 +379,7 @@
     // delete modal
     function openModal(url) {
         document.getElementById('deleteForm').action = url;
-        const modal = document.getElementById('deleteModal');
-        modal.style.display = 'flex';
+        document.getElementById('deleteModal').style.display = 'flex';
     }
 
     function closeModal() {
@@ -360,6 +388,20 @@
 
     document.getElementById('deleteModal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
+    });
+
+    // cancel schedule modal
+    function openCancelModal(url) {
+        document.getElementById('cancelForm').action = url;
+        document.getElementById('cancelModal').style.display = 'flex';
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModal').style.display = 'none';
+    }
+
+    document.getElementById('cancelModal').addEventListener('click', function(e) {
+        if (e.target === this) closeCancelModal();
     });
 </script>
 {% endblock %}
