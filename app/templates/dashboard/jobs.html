@@ -1,9 +1,32 @@
- {% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Jobs — Data-Forge{% endblock %}
 
 {% block content %}
 <div class="main-content">
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="deleteModal" style="display:none;position:fixed;inset:0;
+         background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center">
+        <div style="background:white;border-radius:10px;padding:2rem;
+                    max-width:400px;width:90%;border-top:4px solid #991B1B;
+                    box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+            <h3 style="color:#991B1B;font-family:'Playfair Display',serif;
+                       margin-bottom:0.5rem">Delete Job</h3>
+            <p style="color:var(--gray);font-size:0.875rem;margin-bottom:1.5rem;line-height:1.6">
+                Are you sure you want to delete this job? This action cannot be undone.
+            </p>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+                <button onclick="closeModal()"
+                        class="btn btn-outline btn-sm">Cancel</button>
+                <form id="deleteForm" method="POST">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Delete Job
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- PAGE HEADER -->
     <div class="page-header">
@@ -62,26 +85,39 @@
                         <td style="font-size:0.8rem">{{ job.schedule or 'One-time' }}</td>
                         <td style="font-size:0.8rem;color:var(--gray)">
                             {{ job.created_at.strftime('%b %d, %Y') }}<br>
-                            <span style="font-size:0.75rem">{{ job.created_at.strftime('%H:%M') }}</span>
+                            <span style="font-size:0.75rem">
+                                {{ job.created_at.strftime('%H:%M') }}
+                            </span>
                         </td>
                         <td style="font-size:0.8rem;color:var(--gray)">
                             {% if job.last_run_at %}
                             {{ job.last_run_at.strftime('%b %d, %H:%M') }}
                             {% else %}—{% endif %}
                         </td>
-                        <td onclick="event.stopPropagation()">
-                            <form action="{{ url_for('main.delete_job', job_id=job.id) }}"
+                        <td onclick="event.stopPropagation()"
+                            style="white-space:nowrap">
+                            <button type="button"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
+                                Delete
+                            </button>
+                            {% if job.schedule %}
+                            <form action="{{ url_for('main.cancel_job', job_id=job.id) }}"
                                   method="POST"
-                                  onsubmit="return confirm('Delete this job?')">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Delete
+                                  onsubmit="return confirm('Cancel this scheduled job?')"
+                                  style="display:inline;margin-left:4px">
+                                <button type="submit" class="btn btn-outline btn-sm">
+                                    Cancel Schedule
                                 </button>
                             </form>
+                            {% endif %}
                         </td>
                     </tr>
+
                     <!-- DETAIL ROW -->
-                    <tr class="detail-row" id="detail-{{ job.id }}" style="display:none">
-                        <td colspan="7" style="background:var(--off-white); padding:0">
+                    <tr class="detail-row" id="detail-{{ job.id }}"
+                        style="display:none">
+                        <td colspan="7" style="background:var(--off-white);padding:0">
                             <div class="job-detail-panel">
                                 <div class="detail-grid">
                                     <div class="detail-item">
@@ -201,6 +237,7 @@
                         <th>Email</th>
                         <th>Last Run</th>
                         <th>Schedule</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -219,6 +256,13 @@
                             {% else %}—{% endif %}
                         </td>
                         <td style="font-size:0.8rem">{{ job.schedule or 'One-time' }}</td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
+                                Delete
+                            </button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -257,13 +301,11 @@
                             {{ job.created_at.strftime('%b %d, %H:%M') }}
                         </td>
                         <td>
-                            <form action="{{ url_for('main.delete_job', job_id=job.id) }}"
-                                  method="POST"
-                                  onsubmit="return confirm('Delete this job?')">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Delete
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -304,5 +346,20 @@
         });
         row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
     }
+
+    // delete modal
+    function openModal(url) {
+        document.getElementById('deleteForm').action = url;
+        const modal = document.getElementById('deleteModal');
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
 </script>
 {% endblock %}

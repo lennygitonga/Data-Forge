@@ -52,18 +52,18 @@ def settings():
 @main.route("/scrape", methods=["POST"])
 @login_required
 def scrape():
-    data = request.get_json()
-
-    if not data:
-        site      = request.form.get("site")
-        email     = request.form.get("email", current_user.email)
-        user_query = request.form.get("user_query", None)
-        schedule  = request.form.get("schedule", None)
-    else:
-        site      = data.get("site")
-        email     = data.get("email", current_user.email)
+    # handle both form submissions and JSON requests
+    if request.content_type and "application/json" in request.content_type:
+        data       = request.get_json()
+        site       = data.get("site")
+        email      = data.get("email", current_user.email)
         user_query = data.get("user_query", None)
-        schedule  = data.get("schedule", None)
+        schedule   = data.get("schedule", None)
+    else:
+        site       = request.form.get("site")
+        email      = request.form.get("email", current_user.email)
+        user_query = request.form.get("user_query", None)
+        schedule   = request.form.get("schedule", None)
 
     if not site:
         flash("Please enter a website.", "error")
@@ -134,6 +134,25 @@ def contact():
         flash("Message sent! We will get back to you soon.", "success")
         return redirect(url_for("main.contact"))
     return render_template("contact.html")
+
+@main.route("/jobs/<int:job_id>/cancel", methods=["POST"])
+@login_required
+def cancel_job(job_id):
+    job = Job.query.get_or_404(job_id)
+
+    try:
+        from app.scheduler import scheduler
+        scheduler.remove_job(f"job_{job_id}")
+        print(f"Scheduler job {job_id} cancelled")
+    except Exception as e:
+        print(f"Could not remove from scheduler: {e}")
+
+    job.schedule = None
+    job.status = JobStatus.done
+    db.session.commit()
+
+    flash("Scheduled job cancelled.", "success")
+    return redirect(url_for("main.jobs"))
 
 # ─── API ENDPOINTS FOR CLI ────────────────────────────────────────────────────
 
