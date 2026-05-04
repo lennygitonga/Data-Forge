@@ -14,3 +14,7 @@ class Config:
 
     # required for flask-dance on http in development
     OAUTHLIB_INSECURE_TRANSPORT = "1"
+
+    SQLALCHEMY_ENGINE_OPTIONS = {
+    "connect_args": {"sslmode": "require"}
+}
