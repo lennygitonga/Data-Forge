@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from app.scraper import fetch_page
 from app.ai import resolve_site, summarise_content
 from app.emailer import send_report_email
-from app import db
-from app.models import Job, JobStatus
+from app.models import Job, JobStatus, User
+from app import db, bcrypt
 from datetime import datetime
 
 main = Blueprint("main", __name__)
@@ -153,6 +153,108 @@ def cancel_job(job_id):
 
     flash("Scheduled job cancelled.", "success")
     return redirect(url_for("main.jobs"))
+
+    # ─── SETTINGS ─────────────────────────────────────────────────────────────────
+
+@main.route("/settings/profile", methods=["POST"])
+@login_required
+def update_profile():
+    name  = request.form.get("name", "").strip()
+    email = request.form.get("email", "").strip()
+
+    if not name or not email:
+        flash("Name and email are required.", "error")
+        return redirect(url_for("main.settings"))
+
+    # check if email is taken by another user
+    existing = User.query.filter_by(email=email).first()
+    if existing and existing.id != current_user.id:
+        flash("That email is already in use by another account.", "error")
+        return redirect(url_for("main.settings"))
+
+    current_user.name  = name
+    current_user.email = email
+    db.session.commit()
+
+    flash("Profile updated successfully.", "success")
+    return redirect(url_for("main.settings"))
+
+
+@main.route("/settings/password", methods=["POST"])
+@login_required
+def update_password():
+    current_pw = request.form.get("current_password", "")
+    new_pw     = request.form.get("new_password", "")
+    confirm_pw = request.form.get("confirm_password", "")
+
+    if not current_pw or not new_pw or not confirm_pw:
+        flash("All password fields are required.", "error")
+        return redirect(url_for("main.settings") + "?tab=password")
+
+    if not bcrypt.check_password_hash(current_user.password, current_pw):
+        flash("Current password is incorrect.", "error")
+        return redirect(url_for("main.settings") + "?tab=password")
+
+    if new_pw != confirm_pw:
+        flash("New passwords do not match.", "error")
+        return redirect(url_for("main.settings") + "?tab=password")
+
+    if len(new_pw) < 6:
+        flash("New password must be at least 6 characters.", "error")
+        return redirect(url_for("main.settings") + "?tab=password")
+
+    current_user.password = bcrypt.generate_password_hash(new_pw).decode("utf-8")
+    db.session.commit()
+
+    flash("Password updated successfully.", "success")
+    return redirect(url_for("main.settings"))
+
+
+@main.route("/settings/delete-jobs", methods=["POST"])
+@login_required
+def delete_all_jobs():
+    jobs = Job.query.filter(Job.user_id == current_user.id).all()
+
+    # remove from scheduler first
+    from app.scheduler import scheduler
+    for job in jobs:
+        try:
+            scheduler.remove_job(f"job_{job.id}")
+        except Exception:
+            pass
+
+    Job.query.filter(Job.user_id == current_user.id).delete()
+    db.session.commit()
+
+    flash("All jobs deleted successfully.", "success")
+    return redirect(url_for("main.settings") + "?tab=danger")
+
+
+@main.route("/settings/delete-account", methods=["POST"])
+@login_required
+def delete_account():
+    from flask_login import logout_user
+    from app.scheduler import scheduler
+
+    # remove all jobs from scheduler
+    jobs = Job.query.filter(Job.user_id == current_user.id).all()
+    for job in jobs:
+        try:
+            scheduler.remove_job(f"job_{job.id}")
+        except Exception:
+            pass
+
+    # delete all jobs
+    Job.query.filter(Job.user_id == current_user.id).delete()
+
+    # delete user
+    user = current_user._get_current_object()
+    logout_user()
+    db.session.delete(user)
+    db.session.commit()
+
+    flash("Your account has been deleted.", "success")
+    return redirect(url_for("auth.login"))
 
 # ─── API ENDPOINTS FOR CLI ────────────────────────────────────────────────────
 
