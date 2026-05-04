@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: data-forge
+    env: python
+    buildCommand: pip install -r requirements.txt && playwright install chromium
+    startCommand: gunicorn run:app --workers 2 --bind 0.0.0.0:$PORT --timeout 120
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: data-forge-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+databases:
+  - name: data-forge-db
+    databaseName: data_forge
+    user: data_forge_user
