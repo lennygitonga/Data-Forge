@@ -78,132 +78,134 @@
     <div class="tab-content active" id="tab-all">
         {% if jobs %}
         <div class="card">
-            <table class="jobs-table">
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Schedule</th>
-                        <th>Created</th>
-                        <th>Last Run</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr class="job-row" onclick="showDetail({{ job.id }})"
-                        style="cursor:pointer">
-                        <td>
-                            <div class="site-name">{{ job.site }}</div>
-                            {% if job.result_url %}
-                            <div class="site-url">{{ job.result_url }}</div>
-                            {% endif %}
-                        </td>
-                        <td style="font-size:0.8rem;color:var(--gray)">
-                            {{ job.email }}
-                        </td>
-                        <td>
-                            <span class="badge badge-{{ job.status.value }}">
-                                {{ job.status.value }}
-                            </span>
-                        </td>
-                        <td style="font-size:0.8rem">
-                            {{ job.schedule or 'One-time' }}
-                        </td>
-                        <td style="font-size:0.8rem;color:var(--gray)">
-                            {{ job.created_at.strftime('%b %d, %Y') }}<br>
-                            <span style="font-size:0.75rem">
-                                {{ job.created_at.strftime('%H:%M') }}
-                            </span>
-                        </td>
-                        <td style="font-size:0.8rem;color:var(--gray)">
-                            {% if job.last_run_at %}
-                            {{ job.last_run_at.strftime('%b %d, %H:%M') }}
-                            {% else %}—{% endif %}
-                        </td>
-                        <td onclick="event.stopPropagation()"
-                            style="white-space:nowrap">
-                            <button type="button"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
-                                Delete
-                            </button>
-                            {% if job.schedule %}
-                            <button type="button"
-                                    class="btn btn-outline btn-sm"
-                                    style="margin-left:4px"
-                                    onclick="openCancelModal('{{ url_for('main.cancel_job', job_id=job.id) }}')">
-                                Cancel Schedule
-                            </button>
-                            {% endif %}
-                        </td>
-                    </tr>
-
-                    <!-- DETAIL ROW -->
-                    <tr class="detail-row" id="detail-{{ job.id }}"
-                        style="display:none">
-                        <td colspan="7" style="background:var(--off-white);padding:0">
-                            <div class="job-detail-panel">
-                                <div class="detail-grid">
-                                    <div class="detail-item">
-                                        <div class="detail-label">Site</div>
-                                        <div class="detail-value">{{ job.site }}</div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Resolved URL</div>
-                                        <div class="detail-value">
-                                            {% if job.result_url %}
-                                            <a href="{{ job.result_url }}"
-                                               target="_blank"
-                                               style="color:var(--burgundy)">
-                                               {{ job.result_url }}
-                                            </a>
-                                            {% else %}Not resolved yet{% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Query</div>
-                                        <div class="detail-value">
-                                            {{ job.user_query or 'Auto-detected' }}
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Schedule</div>
-                                        <div class="detail-value">
-                                            {{ job.schedule or 'One-time' }}
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Status</div>
-                                        <div class="detail-value">
-                                            <span class="badge badge-{{ job.status.value }}">
-                                                {{ job.status.value }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Created</div>
-                                        <div class="detail-value">
-                                            {{ job.created_at.strftime('%B %d, %Y at %H:%M') }}
-                                        </div>
-                                    </div>
-                                    {% if job.error_msg %}
-                                    <div class="detail-item" style="grid-column:1/-1">
-                                        <div class="detail-label">Error</div>
-                                        <div class="detail-value"
-                                             style="color:#991B1B;font-size:0.8rem">
-                                            {{ job.error_msg }}
-                                        </div>
-                                    </div>
+            <div class="table-wrapper">
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Schedule</th>
+                            <th>Created</th>
+                            <th>Last Run</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr class="job-row" onclick="showDetail({{ job.id }})"
+                            style="cursor:pointer">
+                            <td>
+                                <div class="site-name">{{ job.site }}</div>
+                                {% if job.result_url %}
+                                <div class="site-url">{{ job.result_url }}</div>
+                                {% endif %}
+                            </td>
+                            <td style="font-size:0.8rem;color:var(--gray)">
+                                {{ job.email }}
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ job.status.value }}">
+                                    {{ job.status.value }}
+                                </span>
+                            </td>
+                            <td style="font-size:0.8rem">
+                                {{ job.schedule or 'One-time' }}
+                            </td>
+                            <td style="font-size:0.8rem;color:var(--gray)">
+                                {{ job.created_at.strftime('%b %d, %Y') }}<br>
+                                <span style="font-size:0.75rem">
+                                    {{ job.created_at.strftime('%H:%M') }}
+                                </span>
+                            </td>
+                            <td style="font-size:0.8rem;color:var(--gray)">
+                                {% if job.last_run_at %}
+                                {{ job.last_run_at.strftime('%b %d, %H:%M') }}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td onclick="event.stopPropagation()">
+                                <div class="actions-cell">
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
+                                        Delete
+                                    </button>
+                                    {% if job.schedule %}
+                                    <button type="button"
+                                            class="btn btn-outline btn-sm"
+                                            onclick="openCancelModal('{{ url_for('main.cancel_job', job_id=job.id) }}')">
+                                        Cancel
+                                    </button>
                                     {% endif %}
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+
+                        <!-- DETAIL ROW -->
+                        <tr class="detail-row" id="detail-{{ job.id }}"
+                            style="display:none">
+                            <td colspan="7" style="background:var(--off-white);padding:0">
+                                <div class="job-detail-panel">
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Site</div>
+                                            <div class="detail-value">{{ job.site }}</div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Resolved URL</div>
+                                            <div class="detail-value">
+                                                {% if job.result_url %}
+                                                <a href="{{ job.result_url }}"
+                                                   target="_blank"
+                                                   style="color:var(--burgundy)">
+                                                   {{ job.result_url }}
+                                                </a>
+                                                {% else %}Not resolved yet{% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Query</div>
+                                            <div class="detail-value">
+                                                {{ job.user_query or 'Auto-detected' }}
+                                            </div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Schedule</div>
+                                            <div class="detail-value">
+                                                {{ job.schedule or 'One-time' }}
+                                            </div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value">
+                                                <span class="badge badge-{{ job.status.value }}">
+                                                    {{ job.status.value }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Created</div>
+                                            <div class="detail-value">
+                                                {{ job.created_at.strftime('%B %d, %Y at %H:%M') }}
+                                            </div>
+                                        </div>
+                                        {% if job.error_msg %}
+                                        <div class="detail-item" style="grid-column:1/-1">
+                                            <div class="detail-label">Error</div>
+                                            <div class="detail-value"
+                                                 style="color:#991B1B;font-size:0.8rem">
+                                                {{ job.error_msg }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% else %}
         <div class="card">
@@ -223,26 +225,28 @@
         <div class="card">
             {% set running = jobs|selectattr('status.value', 'equalto', 'running')|list %}
             {% if running %}
-            <table class="jobs-table">
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Email</th>
-                        <th>Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in running %}
-                    <tr>
-                        <td><div class="site-name">{{ job.site }}</div></td>
-                        <td style="font-size:0.8rem">{{ job.email }}</td>
-                        <td style="font-size:0.8rem">
-                            {{ job.created_at.strftime('%b %d, %H:%M') }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Email</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in running %}
+                        <tr>
+                            <td><div class="site-name">{{ job.site }}</div></td>
+                            <td style="font-size:0.8rem">{{ job.email }}</td>
+                            <td style="font-size:0.8rem">
+                                {{ job.created_at.strftime('%b %d, %H:%M') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
             <div class="empty-state">
                 <h3>No running jobs</h3>
@@ -257,45 +261,49 @@
         <div class="card">
             {% set done = jobs|selectattr('status.value', 'equalto', 'done')|list %}
             {% if done %}
-            <table class="jobs-table">
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Email</th>
-                        <th>Last Run</th>
-                        <th>Schedule</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in done %}
-                    <tr>
-                        <td>
-                            <div class="site-name">{{ job.site }}</div>
-                            {% if job.result_url %}
-                            <div class="site-url">{{ job.result_url }}</div>
-                            {% endif %}
-                        </td>
-                        <td style="font-size:0.8rem">{{ job.email }}</td>
-                        <td style="font-size:0.8rem">
-                            {% if job.last_run_at %}
-                            {{ job.last_run_at.strftime('%b %d, %H:%M') }}
-                            {% else %}—{% endif %}
-                        </td>
-                        <td style="font-size:0.8rem">
-                            {{ job.schedule or 'One-time' }}
-                        </td>
-                        <td>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Email</th>
+                            <th>Last Run</th>
+                            <th>Schedule</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in done %}
+                        <tr>
+                            <td>
+                                <div class="site-name">{{ job.site }}</div>
+                                {% if job.result_url %}
+                                <div class="site-url">{{ job.result_url }}</div>
+                                {% endif %}
+                            </td>
+                            <td style="font-size:0.8rem">{{ job.email }}</td>
+                            <td style="font-size:0.8rem">
+                                {% if job.last_run_at %}
+                                {{ job.last_run_at.strftime('%b %d, %H:%M') }}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td style="font-size:0.8rem">
+                                {{ job.schedule or 'One-time' }}
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
             <div class="empty-state">
                 <h3>No completed jobs</h3>
@@ -310,36 +318,40 @@
         <div class="card">
             {% set failed = jobs|selectattr('status.value', 'equalto', 'failed')|list %}
             {% if failed %}
-            <table class="jobs-table">
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Error</th>
-                        <th>Created</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in failed %}
-                    <tr>
-                        <td><div class="site-name">{{ job.site }}</div></td>
-                        <td style="font-size:0.8rem;color:#991B1B">
-                            {{ job.error_msg or 'Unknown error' }}
-                        </td>
-                        <td style="font-size:0.8rem">
-                            {{ job.created_at.strftime('%b %d, %H:%M') }}
-                        </td>
-                        <td>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Error</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in failed %}
+                        <tr>
+                            <td><div class="site-name">{{ job.site }}</div></td>
+                            <td style="font-size:0.8rem;color:#991B1B">
+                                {{ job.error_msg or 'Unknown error' }}
+                            </td>
+                            <td style="font-size:0.8rem">
+                                {{ job.created_at.strftime('%b %d, %H:%M') }}
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            onclick="openModal('{{ url_for('main.delete_job', job_id=job.id) }}')">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
             <div class="empty-state">
                 <h3>No failed jobs</h3>
@@ -354,7 +366,6 @@
 
 {% block extra_js %}
 <script>
-    // tab switching
     function switchTab(name) {
         document.querySelectorAll('.tab-btn').forEach((btn, i) => {
             const names = ['all', 'running', 'done', 'failed'];
@@ -366,7 +377,6 @@
         document.getElementById('tab-' + name).classList.add('active');
     }
 
-    // job detail expand/collapse
     function showDetail(id) {
         const row = document.getElementById('detail-' + id);
         const allDetails = document.querySelectorAll('.detail-row');
@@ -376,7 +386,6 @@
         row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
     }
 
-    // delete modal
     function openModal(url) {
         document.getElementById('deleteForm').action = url;
         document.getElementById('deleteModal').style.display = 'flex';
@@ -390,7 +399,6 @@
         if (e.target === this) closeModal();
     });
 
-    // cancel schedule modal
     function openCancelModal(url) {
         document.getElementById('cancelForm').action = url;
         document.getElementById('cancelModal').style.display = 'flex';

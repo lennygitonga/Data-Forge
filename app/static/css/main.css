@@ -6,21 +6,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --burgundy:     #6B0F1A;
-  --burgundy-dark:#4A0912;
+  --burgundy:      #6B0F1A;
+  --burgundy-dark: #4A0912;
   --burgundy-light:#8B1A2A;
-  --gold:         #C9A84C;
-  --gold-light:   #E8D9B5;
-  --gold-dark:    #A88734;
-  --white:        #FFFFFF;
-  --off-white:    #FAF7F2;
-  --charcoal:     #1A1A1A;
-  --gray:         #6B7280;
-  --light-gray:   #F3F4F6;
-  --border:       #E8D9B5;
-  --success:      #065F46;
-  --error:        #991B1B;
-  --warning:      #92400E;
+  --gold:          #C9A84C;
+  --gold-light:    #E8D9B5;
+  --gold-dark:     #A88734;
+  --white:         #FFFFFF;
+  --off-white:     #FAF7F2;
+  --charcoal:      #1A1A1A;
+  --gray:          #6B7280;
+  --light-gray:    #F3F4F6;
+  --border:        #E8D9B5;
+  --success:       #065F46;
+  --error:         #991B1B;
+  --warning:       #92400E;
 }
 
 * {
@@ -272,6 +272,11 @@ select.form-control {
   cursor: pointer;
 }
 
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
 /* ============================================
    CARDS
    ============================================ */
@@ -445,6 +450,29 @@ select.form-control {
   margin-top: 2px;
 }
 
+/* action buttons cell */
+.actions-cell {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.actions-cell .btn {
+  min-width: 70px;
+  text-align: center;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+}
+
+/* ============================================
+   TABLE WRAPPER
+   ============================================ */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ============================================
    STATS CARDS
    ============================================ */
@@ -598,6 +626,14 @@ select.form-control {
   padding-left: 11px;
 }
 
+.settings-section {
+  display: none;
+}
+
+.settings-section.active {
+  display: block;
+}
+
 /* ============================================
    EMPTY STATE
    ============================================ */
@@ -673,14 +709,150 @@ select.form-control {
 }
 
 /* ============================================
-   RESPONSIVE
+   JOB DETAIL PANEL
    ============================================ */
-@media (max-width: 768px) {
-  .main-content { padding: 1rem; }
-  .form-row { grid-template-columns: 1fr; }
-  .settings-grid { grid-template-columns: 1fr; }
-  .navbar-nav { display: none; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+.job-detail-panel {
+  padding: 1.25rem 1.5rem;
+  border-top: 2px solid var(--gold);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.detail-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 0.875rem;
+  color: var(--charcoal);
+}
+
+/* ============================================
+   TEAM CARDS
+   ============================================ */
+.team-card {
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(107,15,26,0.12);
+}
+
+.team-img {
+  height: 220px;
+  background-size: cover;
+  background-position: center top;
+  border-bottom: 3px solid var(--gold);
+}
+
+.team-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.team-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--burgundy);
+  margin-bottom: 3px;
+}
+
+.team-role {
+  font-size: 0.8rem;
+  color: var(--gold-dark);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.team-bio {
+  font-size: 0.85rem;
+  color: var(--gray);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.team-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.team-tag {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  color: var(--burgundy);
+  font-weight: 500;
+}
+
+/* ============================================
+   CONTACT PAGE
+   ============================================ */
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.contact-icon {
+  font-size: 1.25rem;
+  width: 40px;
+  height: 40px;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 2px;
+}
+
+.contact-value {
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+.social-btn {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--charcoal);
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.social-btn:hover {
+  border-color: var(--gold);
+  color: var(--burgundy);
+  background: var(--off-white);
 }
 
 /* ============================================
@@ -795,7 +967,6 @@ select.form-control {
   color: #991B1B;
 }
 
-/* accessibility row */
 .gear-access-row {
   display: flex;
   align-items: center;
@@ -882,6 +1053,11 @@ html.dark-mode {
   color: #E8D9B5;
 }
 
+html.dark-mode body {
+  background: #0F0A0B;
+  color: #E8D9B5;
+}
+
 html.dark-mode .navbar {
   background: #2A0A0F;
 }
@@ -936,6 +1112,30 @@ html.dark-mode .page-header h1 {
   color: var(--gold);
 }
 
+html.dark-mode .off-white,
+html.dark-mode .auth-card,
+html.dark-mode .settings-nav a {
+  background: #1A0A0D;
+  color: #E8D9B5;
+}
+
+html.dark-mode .page-divider {
+  background: #3A1A20;
+}
+
+html.dark-mode .jobs-table th {
+  border-color: #3A1A20;
+  color: #C9A84C;
+}
+
+html.dark-mode .badge-done     { background: #064E3B; color: #6EE7B7; }
+html.dark-mode .badge-failed   { background: #7F1D1D; color: #FCA5A5; }
+html.dark-mode .badge-running  { background: #1E3A5F; color: #93C5FD; }
+html.dark-mode .badge-pending  { background: #78350F; color: #FDE68A; }
+
+html.dark-mode .alert-success { background: #064E3B; color: #6EE7B7; }
+html.dark-mode .alert-error   { background: #7F1D1D; color: #FCA5A5; }
+
 /* ============================================
    COMPACT VIEW
    ============================================ */
@@ -965,166 +1165,229 @@ html.compact .hero-form {
 }
 
 /* ============================================
-   JOB DETAIL PANEL
+   RESPONSIVE — TABLET (max 1024px)
    ============================================ */
-.job-detail-panel {
-  padding: 1.25rem 1.5rem;
-  border-top: 2px solid var(--gold);
-}
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 1.5rem;
+  }
 
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-.detail-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--gray);
-  margin-bottom: 4px;
-}
-
-.detail-value {
-  font-size: 0.875rem;
-  color: var(--charcoal);
-}
-
-/* ============================================
-   TEAM CARDS
-   ============================================ */
-.team-card {
-  padding: 0;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.team-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(107,15,26,0.12);
-}
-
-.team-img {
-  height: 220px;
-  background-size: cover;
-  background-position: center top;
-  border-bottom: 3px solid var(--gold);
-}
-
-.team-body {
-  padding: 1.25rem 1.5rem;
-}
-
-.team-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  color: var(--burgundy);
-  margin-bottom: 3px;
-}
-
-.team-role {
-  font-size: 0.8rem;
-  color: var(--gold-dark);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
-}
-
-.team-bio {
-  font-size: 0.85rem;
-  color: var(--gray);
-  line-height: 1.7;
-  margin-bottom: 1rem;
-}
-
-.team-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.team-tag {
-  font-size: 0.75rem;
-  padding: 3px 10px;
-  border-radius: 20px;
-  background: var(--off-white);
-  border: 1px solid var(--border);
-  color: var(--burgundy);
-  font-weight: 500;
-}
-
-/* responsive about page */
-@media (max-width: 768px) {
-  .about-story-grid {
+  .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .settings-grid {
+    grid-template-columns: 200px 1fr;
   }
 }
 
 /* ============================================
-   CONTACT PAGE
+   RESPONSIVE — MOBILE (max 768px)
    ============================================ */
-.contact-info-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
+@media (max-width: 768px) {
 
-.contact-icon {
-  font-size: 1.25rem;
-  width: 40px;
-  height: 40px;
-  background: var(--off-white);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+  /* navbar */
+  .navbar {
+    padding: 0 1rem;
+    height: 56px;
+  }
 
-.contact-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--gray);
-  margin-bottom: 2px;
-}
+  .navbar-nav {
+    display: none;
+  }
 
-.contact-value {
-  font-size: 0.9rem;
-  color: var(--charcoal);
-  font-weight: 500;
-}
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
 
-.social-btn {
-  display: inline-block;
-  padding: 6px 16px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 0.8rem;
-  color: var(--charcoal);
-  transition: all 0.2s;
-  font-weight: 500;
-}
+  .user-name {
+    display: none;
+  }
 
-.social-btn:hover {
-  border-color: var(--gold);
-  color: var(--burgundy);
-  background: var(--off-white);
+  /* main content */
+  .main-content {
+    padding: 1rem;
+  }
+
+  /* page header */
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+
+  /* hero form */
+  .hero-form {
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .hero-form h2 {
+    font-size: 1.2rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* stats */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.5rem;
+  }
+
+  /* tabs */
+  .tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .tab-btn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+
+  /* cards */
+  .card {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  /* jobs table */
+  .jobs-table th,
+  .jobs-table td {
+    padding: 10px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* hide less important columns on mobile */
+  .jobs-table th:nth-child(2),
+  .jobs-table td:nth-child(2),
+  .jobs-table th:nth-child(4),
+  .jobs-table td:nth-child(4),
+  .jobs-table th:nth-child(6),
+  .jobs-table td:nth-child(6) {
+    display: none;
+  }
+
+  /* actions cell */
+  .actions-cell {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .actions-cell .btn {
+    min-width: 60px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
+  /* detail grid */
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* settings */
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .settings-nav a {
+    padding: 6px 12px;
+    background: var(--off-white);
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  /* about and contact page grids */
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:1fr 1.6fr"],
+  [style*="grid-template-columns: 1fr 1.6fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* team cards */
+  .team-img {
+    height: 180px;
+  }
+
+  /* auth card */
+  .auth-card {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  /* footer */
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* gear dropdown */
+  .gear-dropdown {
+    right: -10px;
+    min-width: 240px;
+  }
+
+  /* modals */
+  #deleteModal > div,
+  #cancelModal > div {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
 }
 
 /* ============================================
-   SETTINGS SECTIONS
+   RESPONSIVE — SMALL MOBILE (max 480px)
    ============================================ */
-.settings-section {
-  display: none;
-}
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 
-.settings-section.active {
-  display: block;
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .hero-form {
+    padding: 1.25rem;
+  }
+
+  .tabs {
+    gap: 0;
+  }
+
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  .auth-card {
+    padding: 1.25rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.25rem;
+  }
 }
