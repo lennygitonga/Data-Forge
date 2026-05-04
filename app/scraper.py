@@ -66,8 +66,7 @@ def fetch_page(url: str) -> dict:
 
 def fetch_with_playwright(url: str) -> dict:
     """
-    Fallback for JavaScript heavy sites using Playwright.
-    Also has retry logic.
+    Fallback for JavaScript heavy sites using Playwright with stealth mode.
     """
     last_error = None
 
@@ -75,18 +74,41 @@ def fetch_with_playwright(url: str) -> dict:
         try:
             print(f"Playwright attempt {attempt}/{MAX_RETRIES}: {url}")
             from playwright.sync_api import sync_playwright
+            from playwright_stealth import stealth_sync
 
             with sync_playwright() as p:
-                browser = p.chromium.launch(headless=True)
-                page = browser.new_page(extra_http_headers=HEADERS)
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-blink-features=AutomationControlled",
+                        "--disable-infobars",
+                        "--window-size=1920,1080",
+                    ]
+                )
+                context = browser.new_context(
+                    viewport={"width": 1920, "height": 1080},
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    locale="en-US",
+                    timezone_id="America/New_York",
+                )
+                page = context.new_page()
+
+                # apply stealth mode
+                stealth_sync(page)
+
                 page.goto(url, timeout=30000, wait_until="networkidle")
+
+                # wait a bit like a human would
+                page.wait_for_timeout(2000)
+
                 content = page.content()
                 browser.close()
 
             text = clean_html(content)
 
             if len(text) < 100:
-                raise Exception("Playwright returned empty content")
+                raise Exception("Playwright returned empty content — site may require login")
 
             return {
                 "success": True,
